@@ -57,6 +57,12 @@
 	let expression = $state(DEFAULT_EXPR);
 	let localTz = $state('UTC'); // resolved at mount from Intl
 	let tz = $state('UTC'); // current selection
+	// Remembered last NON-UTC tz, so the dedicated UTC toggle flips back
+	// to wherever the user was instead of dropping them at localTz (which
+	// they may have explicitly moved away from). Cycle-1a oracle fix:
+	// bar item 3's "quick UTC toggle" is a single-input state-flip control
+	// outside the picker, not satisfied by the picker's own UTC entry.
+	let previousTz = $state('UTC');
 	let now = $state(new Date());
 	let exprCopied = $state(false);
 	let linkCopied = $state(false);
@@ -80,6 +86,24 @@
 		writeUrlState(state);
 	});
 
+	// Track the last non-UTC tz the user selected (via picker OR URL hydrate)
+	// so toggleUtc() can flip back there cleanly. Update only on non-UTC
+	// transitions; UTC itself is the OTHER side of the toggle.
+	$effect(() => {
+		if (initialized && tz !== 'UTC') previousTz = tz;
+	});
+
+	function toggleUtc() {
+		if (tz === 'UTC') {
+			// Flip back to wherever the user was before, falling back to
+			// browser-local if they've never been off UTC this session.
+			tz = previousTz !== 'UTC' ? previousTz : localTz;
+		} else {
+			previousTz = tz;
+			tz = 'UTC';
+		}
+	}
+
 	onMount(() => {
 		try {
 			localTz = Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC';
@@ -90,6 +114,10 @@
 		const fromUrl = readUrlState();
 		if (fromUrl.expression !== undefined) expression = fromUrl.expression;
 		tz = fromUrl.tz ?? localTz;
+		// Seed previousTz: if the user landed on UTC (default or hydrated),
+		// the toggle's "previous" should fall back to local. Otherwise
+		// remember whatever they hydrated with as the toggle-back target.
+		previousTz = tz !== 'UTC' ? tz : localTz;
 
 		initialized = true;
 
@@ -152,6 +180,21 @@
 					{/each}
 				</select>
 			</label>
+			<!-- Cycle-1a: dedicated UTC toggle outside the picker. Single-
+			     input state-flip — click while in UTC restores the previous
+			     tz; click while not in UTC stashes current and flips to UTC. -->
+			<button
+				class="btn-utc"
+				class:active={tz === 'UTC'}
+				onclick={toggleUtc}
+				type="button"
+				aria-pressed={tz === 'UTC'}
+				title={tz === 'UTC'
+					? `Currently UTC — click to restore ${previousTz}`
+					: 'Quick toggle to UTC'}
+			>
+				UTC
+			</button>
 			<button
 				class="btn-ghost"
 				onclick={copyShareLink}
@@ -403,6 +446,38 @@
 	.btn-ghost:hover {
 		border-color: var(--accent-dim);
 		color: var(--accent);
+	}
+
+	/* Cycle-1a: UTC quick-toggle. Sits outside the picker, single click
+	   flips state. Active styling when current tz === 'UTC' so the
+	   bi-state is visible. */
+	.btn-utc {
+		display: inline-flex;
+		align-items: center;
+		padding: 7px 12px;
+		font-size: 12px;
+		font-weight: 700;
+		font-family: var(--mono);
+		letter-spacing: 0.08em;
+		color: var(--muted);
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: var(--radius-sm);
+		transition: border-color 0.15s, color 0.15s, background 0.15s;
+	}
+	.btn-utc:hover {
+		border-color: var(--accent-dim);
+		color: var(--fg);
+	}
+	.btn-utc.active {
+		color: #0a0b0d;
+		background: var(--accent);
+		border-color: var(--accent);
+		box-shadow: 0 0 22px -6px var(--accent-glow);
+	}
+	.btn-utc.active:hover {
+		background: var(--accent-dim);
+		border-color: var(--accent-dim);
 	}
 
 	.hero {
