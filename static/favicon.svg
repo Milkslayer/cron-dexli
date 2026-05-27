@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+	<rect width="32" height="32" rx="7" fill="#0a0b0d" />
+	<!-- Clock face for the cron sibling — minute marks at 12/3/6/9, hands
+	     pointing to 10:10 for tab-icon legibility at 16px. Same palette as
+	     webhook.dexli.dev's favicon (dark tile + #c6f135 lime), the glyph is
+	     the only point of differentiation between siblings. -->
+	<circle cx="16" cy="16" r="9" fill="none" stroke="#c6f135" stroke-width="2" />
+	<line x1="16" y1="8" x2="16" y2="10" stroke="#c6f135" stroke-width="1.6" stroke-linecap="round" />
+	<line x1="24" y1="16" x2="22" y2="16" stroke="#c6f135" stroke-width="1.6" stroke-linecap="round" />
+	<line x1="16" y1="24" x2="16" y2="22" stroke="#c6f135" stroke-width="1.6" stroke-linecap="round" />
+	<line x1="8" y1="16" x2="10" y2="16" stroke="#c6f135" stroke-width="1.6" stroke-linecap="round" />
+	<!-- Hands at 10:10 — minute to 2, hour to 10. -->
+	<line x1="16" y1="16" x2="20" y2="13" stroke="#c6f135" stroke-width="2" stroke-linecap="round" />
+	<line x1="16" y1="16" x2="13" y2="12" stroke="#c6f135" stroke-width="2" stroke-linecap="round" />
+	<circle cx="16" cy="16" r="1.4" fill="#c6f135" />
+</svg>
