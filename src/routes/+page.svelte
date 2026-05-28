@@ -163,8 +163,49 @@
 	}
 </script>
 
+<script lang="ts" module>
+	const SEO = {
+		title: 'cron.dexli.dev — cron expression parser and firings preview',
+		description:
+			'Paste a cron expression to see the next firing times across timezones, browse the pattern library, and share the parsed state as a single URL. No server round-trips.',
+		url: 'https://cron.dexli.dev/',
+		ogImage: 'https://cron.dexli.dev/og-card.png'
+	};
+	const JSON_LD = {
+		'@context': 'https://schema.org',
+		'@type': 'WebApplication',
+		name: 'cron.dexli.dev',
+		url: SEO.url,
+		description:
+			'Live cron expression parser with timezone-aware firings preview, pattern library, and URL-shareable state.',
+		applicationCategory: 'DeveloperApplication',
+		operatingSystem: 'Any',
+		offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' }
+	};
+</script>
+
 <svelte:head>
-	<title>cron — cron expression parser and preview · dexli.dev</title>
+	<title>{SEO.title}</title>
+	<meta name="description" content={SEO.description} />
+
+	<!-- Open Graph (X / HN / Discord / Slack unfurling) -->
+	<meta property="og:type" content="website" />
+	<meta property="og:site_name" content="dexli.dev" />
+	<meta property="og:url" content={SEO.url} />
+	<meta property="og:title" content={SEO.title} />
+	<meta property="og:description" content={SEO.description} />
+	<meta property="og:image" content={SEO.ogImage} />
+	<meta property="og:image:width" content="1200" />
+	<meta property="og:image:height" content="630" />
+
+	<!-- Twitter / X — mirrors OG, summary_large_image card -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:title" content={SEO.title} />
+	<meta name="twitter:description" content={SEO.description} />
+	<meta name="twitter:image" content={SEO.ogImage} />
+
+	<!-- Schema.org structured data -->
+	{@html `<script type="application/ld+json">${JSON.stringify(JSON_LD)}</script>`}
 </svelte:head>
 
 <div class="page">
@@ -369,6 +410,14 @@
 
 	<footer class="foot wrap">
 		<span>A tiny tool for reading scheduled jobs.</span>
+		<span class="family">
+			Part of the
+			<a href="https://dexli.dev">dexli.dev</a>
+			tiny-tools family —
+			<a href="https://webhook.dexli.dev" rel="external">webhook.dexli.dev</a>
+			·
+			<a href="https://regex.dexli.dev" rel="external">regex.dexli.dev</a>
+		</span>
 		<span class="dim">2026 · cron · dexli.dev</span>
 	</footer>
 </div>
@@ -744,14 +793,29 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+		gap: 16px;
+		flex-wrap: wrap;
 		padding-top: 18px;
 		padding-bottom: 26px;
 		border-top: 1px solid var(--border-soft);
 		font-size: 12px;
 		color: var(--muted);
 	}
+	.foot .family {
+		color: var(--muted);
+	}
+	.foot .family a {
+		color: var(--accent);
+	}
 	.foot .dim {
 		color: var(--text-faint);
+	}
+	@media (max-width: 640px) {
+		.foot {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 6px;
+		}
 	}
 
 	@media (max-width: 820px) {
