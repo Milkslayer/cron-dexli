@@ -449,12 +449,23 @@
 		display: flex;
 		align-items: center;
 		gap: 12px;
+		/* flex-wrap allows the three-control group (tz-wrap + UTC + share)
+		   to break to a second line on narrow viewports instead of
+		   pushing the layout into horizontal scroll. Combined with the
+		   `.tz` min-width override at the 480px breakpoint below, this
+		   keeps cron.dexli.dev usable at 375px wide. */
+		flex-wrap: wrap;
+		justify-content: flex-end;
 	}
 	.tz-wrap {
 		display: inline-flex;
 		align-items: center;
 		gap: 8px;
 		font-size: 12px;
+		/* min-width: 0 lets the select inside this flex-item shrink past
+		   its content-implied minimum when space runs out, instead of
+		   forcing the parent .head-right to widen. */
+		min-width: 0;
 		color: var(--muted);
 	}
 	.tz-label {
@@ -845,6 +856,35 @@
 		.fire-abs {
 			grid-area: abs;
 			white-space: normal;
+		}
+	}
+
+	@media (max-width: 480px) {
+		/* Below 480px (covers 375px mobile audit target), stack the
+		   .head-right group beneath the Wordmark on its own row, and
+		   force the native <select.tz> to shrink past its option-content
+		   intrinsic width via min-width:0 + width:100% on the wrapping
+		   label. Combined with .head-right's flex-wrap above, this
+		   keeps the topbar within the viewport without horizontal
+		   scroll. */
+		.topbar {
+			flex-wrap: wrap;
+		}
+		.head-right {
+			flex: 1 1 100%;
+			justify-content: flex-start;
+			gap: 6px;
+		}
+		.tz-wrap {
+			flex: 1 1 100%;
+			width: 100%;
+			min-width: 0;
+		}
+		.tz {
+			min-width: 0;
+			width: 100%;
+			max-width: 100%;
+			flex: 1 1 auto;
 		}
 	}
 </style>
