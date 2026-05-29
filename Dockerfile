@@ -25,7 +25,7 @@ WORKDIR /app
 # M; fixable post-publish without a rebuild contract change.
 LABEL org.opencontainers.image.title="cron" \
       org.opencontainers.image.description="Cron expression parser — paste a schedule, see when it fires next. Part of the dexli.dev tiny-tools family." \
-      org.opencontainers.image.source="https://github.com/Milkslayer/cron-dexli" \
+      org.opencontainers.image.source="https://github.com/dexli-dev/cron-dexli" \
       org.opencontainers.image.licenses="UNLICENSED"
 
 # Fallback defaults only — every value is overridable at run time via -e.
